@@ -185,6 +185,14 @@
     <ClInclude Include="SOIL2\stb_image.h" />
     <ClInclude Include="SOIL2\stb_image_write.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\cobblestone.png" />
+    <Image Include="Textures\cobblestone_specular.png" />
+    <Image Include="Textures\grass.png" />
+    <Image Include="Textures\grass_specular.png" />
+    <Image Include="Textures\stone.png" />
+    <Image Include="Textures\stone_specular.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

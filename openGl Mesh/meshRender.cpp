@@ -24,7 +24,7 @@ void MeshRender::create() {
 	glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0);
-
+	loadTexture("grass", "grass_specular");
 	//loadTexture(std::string("Textures/grass.png").c_str(), std::string("Textures/grass_specular.png").c_str());
 }
 void MeshRender::render(Camera p1, glm::mat4 projection) {
@@ -46,7 +46,7 @@ void MeshRender::render(Camera p1, glm::mat4 projection) {
 	glBindTexture(GL_TEXTURE_2D, texMaps[0]);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texMaps[0]);
-	loadTexture("grass", "grass");
+	//loadTexture("grass", "grass_specular");
 
 	glBindVertexArray(VAO);
 
@@ -60,7 +60,6 @@ void MeshRender::render(Camera p1, glm::mat4 projection) {
 }
 
 void MeshRender::loadTexture(std::string diffuse, std::string specular) {
-	return;
 	diffuse = "Textures/" + diffuse + ".png";
 	specular = "Textures/" + specular + ".png";
 	int textureWidth, textureHeight;
@@ -90,10 +89,13 @@ void MeshRender::loadTexture(std::string diffuse, std::string specular) {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	/*this->shader.Bind();
-	glUniform1i(glGetUniformLocation(this->shader.Program, "material.diffuse"), 0);
-	glUniform1i(glGetUniformLocation(this->shader.Program, "material.specular"), 1);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+	shader.bind();
+	GLuint matLoc = shader.getLocation("mat_diff");
+	int diff = 0;
+	shader.setLocation(matLoc, diff);
+	/*glUniform1i(glGetUniformLocation(shader.program, "mat_diff"), 0);
+	glUniform1i(glGetUniformLocation(this->shader.Program, "material.specular"), 1); */
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void MeshRender::loadMesh(BlockMesh& m) {

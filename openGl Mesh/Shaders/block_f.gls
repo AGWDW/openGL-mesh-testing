@@ -8,9 +8,11 @@ in vec3 Normal;
 
 uniform vec3 viewPos;
 
-// uniform sampler2D mat_diff; // material diffuse
+uniform sampler2D mat_diff; // material diffuse
 // uniform float mat_spec; // material specular
 
+
+//learn opengl.com
 vec3 objCol = vec3(0.5, 1, 0.34);
 vec3 lightCol = vec3(1);
 
@@ -21,15 +23,15 @@ void main()
 
 	//ambient
 	float amb = 0.1f;
-	//res += amb * vec3(texture(mat_diff, TexCoords)); // for textures
-	res += amb;
+	res += amb * vec3(texture(mat_diff, TexCoords)); // for textures
+	//res += amb;
 
 	//diffuse
 	vec3 norm = normalize(Normal);
 	vec3 lightDir = normalize(lightPos - FragPos);  
 	float diff = max(dot(norm, lightDir), 0.0);
-	//res += diff * vec3(texture(mat_diff, TexCoords)); // for texures
-	res += diff;
+	res += diff * vec3(texture(mat_diff, TexCoords)); // for texures
+	//res += diff;
 
 	res *= lightCol * objCol;
 	FragColor = vec4(res, 1);

@@ -76,3 +76,6 @@ GLuint Shader::getLocation(std::string name) {
 void Shader::setLocation(GLuint& location, glm::mat4& value) {
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
+void Shader::setLocation(GLuint& location, GLint& value){
+	glUniform1i(location, value);
+}

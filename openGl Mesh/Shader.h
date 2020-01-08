@@ -19,6 +19,7 @@ public:
 	void bind();
 	GLuint getLocation(std::string name);
 	void setLocation(GLuint& location, glm::mat4& value);
+	void setLocation(GLuint& location, GLint& value);
 private:
 	GLuint program;
 };

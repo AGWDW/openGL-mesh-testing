@@ -116,4 +116,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\cobblestone.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\cobblestone_specular.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\grass.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\grass_specular.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\stone.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\stone_specular.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
