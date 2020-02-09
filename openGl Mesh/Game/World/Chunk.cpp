@@ -190,8 +190,8 @@ GLboolean Chunk::checkCollision(Physics::Update& update) {
 		std::array<glm::vec3, 2> cubeCorners = {
 				glm::vec3(0) + std::get<2>(chunkFace), glm::vec3(1, 1, -1) + std::get<2>(chunkFace)
 		};
-		for (auto& playerMesh : update.Extra) {
-			auto& meshPos = update.Data;
+		for (auto& playerMesh : update.Vertices) {
+			auto meshPos = update.PrevPositon + update.DeltaVelocity + update.PrevVelocity;
 			std::array<glm::vec3, 8> playerCorners = {
 				glm::vec3(0, 0, -1) + meshPos, glm::vec3(1, 0, -1) + meshPos,
 				glm::vec3(0, 1, -1) + meshPos, glm::vec3(1, 1, -1) + meshPos,

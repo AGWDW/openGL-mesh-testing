@@ -19,16 +19,12 @@ namespace Physics {
 		for (auto& update : Engine::updateBuffer) {
 			if (update.Tag == TAG::COLLISION) {
 				// find chunk standing in
-				Chunk& chunk = world.getOccupiedChunk((glm::ivec3)update.Data);
+				Chunk& chunk = world.getOccupiedChunk((glm::ivec3)update.Position);
 				if (chunk.isNull()) continue;
 				
 				// check collision | if !collided do update
 				if (!chunk.checkCollision(update)) {
 					update.Sender->doUpdate(update);
-					// std::cout << "Update Passed\n";
-				}
-				else {
-					// std::cout << "Update Failed\n";
 				}
 			}
 		}

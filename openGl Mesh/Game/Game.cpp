@@ -135,56 +135,35 @@ void Game::setupEventCB(GLFWwindow* window) {
 }
 void Game::doMovement() {
 	std::vector<Physics::Update> updates;
-	if (Game::keys[GLFW_KEY_W] || Game::keys[GLFW_KEY_UP]) {
+	auto move = [](Camera_Movement dir, GLfloat deltaTime, std::vector<Physics::Update>& updates) {
 		if (Game::hasPlayer) {
-			updates.push_back(Game::player.processMovement(FORWARD, deltaTime));
+			updates.push_back(Game::player.processMovement(dir, deltaTime));
 		}
 		else {
-			Game::mainCamera->ProcessMovement(FORWARD, deltaTime);
+			Game::mainCamera->ProcessMovement(dir, deltaTime);
 		}
+	};
+	if (Game::keys[GLFW_KEY_W] || Game::keys[GLFW_KEY_UP]) {
+		move(FORWARD, deltaTime, updates);
 	}
 	if (Game::keys[GLFW_KEY_S] || Game::keys[GLFW_KEY_DOWN]) {
-		if (Game::hasPlayer) {
-			updates.push_back(Game::player.processMovement(BACKWARD, deltaTime));
-		}
-		else {
-			Game::mainCamera->ProcessMovement(BACKWARD, deltaTime);
-		}
+		move(BACKWARD, deltaTime, updates);
 	}
 	if (Game::keys[GLFW_KEY_D] || Game::keys[GLFW_KEY_RIGHT]) {
-		if (Game::hasPlayer) {
-			updates.push_back(Game::player.processMovement(RIGHT_C, deltaTime));
-		}
-		else {
-			Game::mainCamera->ProcessMovement(RIGHT_C, deltaTime);
-		}
+		move(RIGHT_C, deltaTime, updates);
 	}
 	if (Game::keys[GLFW_KEY_A] || Game::keys[GLFW_KEY_LEFT]) {
-		if (Game::hasPlayer) {
-			updates.push_back(Game::player.processMovement(LEFT_C, deltaTime));
-		}
-		else {
-			Game::mainCamera->ProcessMovement(LEFT_C, deltaTime);
-		}
+		move(LEFT_C, deltaTime, updates);
 	}
 	if (Game::keys[GLFW_KEY_SPACE]) {
-		if (Game::hasPlayer) {
-			updates.push_back(Game::player.processMovement(UP_C, deltaTime));
-		}
-		else {
-			Game::mainCamera->ProcessMovement(UP_C, deltaTime);
-		}
+		move(UP_C, deltaTime, updates);
 	}
 	if (Game::keys[GLFW_KEY_LEFT_SHIFT]) {
-		if (Game::hasPlayer) {
-			updates.push_back(Game::player.processMovement(DOWN_C, deltaTime));
-		}
-		else {
-			Game::mainCamera->ProcessMovement(DOWN_C, deltaTime);
-		}
+		move(DOWN_C, deltaTime, updates);
 	}
 	//std::cout << updates.size() << "\n";
-	Game::physicsEng.addUpdates(updates);
+	auto u = Physics::Update::combine(updates);
+	Game::physicsEng.addUpdate(u);
 }
 void Game::cleanUp() {
 	world.cleanUp();

@@ -1,7 +1,7 @@
 #include "Player.h"
 Player::Player() {
 	object.setPosition({ 0, 0, 0 });
-	movementSpeed = 6;
+	movementSpeed = PLAYER_SPEED;
 	cam.setPosition({ 0, 1.25, -0.75 });
 	object.setPhysical(GL_TRUE);
 	renderer = Render::ChunkMeshRender(false, "");
@@ -9,14 +9,14 @@ Player::Player() {
 Player::Player(GLboolean init) : renderer(init, "") {
 	if (init) {
 		object.setPosition({ 0, 0, 0 });
-		movementSpeed = 6;
+		movementSpeed = PLAYER_SPEED;
 		cam.setPosition({ 0, 1.25, -0.75 });
 		object.setPhysical(GL_TRUE);
 	}
 }
 Player::Player(glm::vec3 position, glm::vec3 camOff) {
 	object.setPosition(position);
-	movementSpeed = 6;
+	movementSpeed = PLAYER_SPEED;
 	camera_offset = camOff;
 	cam.setPosition(camOff);
 }
@@ -69,35 +69,42 @@ Physics::Update Player::processMovement(Camera_Movement movement, GLfloat deltaT
 	Physics::Update update;
 	update.Sender = &object;
 	update.Tag = Physics::COLLISION;
-	update.Positon = object.getPosition();
-	update.Extra = faces;
-	glm::vec3 pos = object.getPosition();
+	update.Vertices = faces;
+	update.PrevPositon = object.getPosition();
+	update.PrevVelocity = object.getVelocity();
+
+	glm::vec3 deltaV = glm::vec3(0);
+
 	switch (movement)
 	{
 	case FORWARD:
-		object.setPosition(pos + glm::vec3(0, 0, -1) *deltaTime * movementSpeed);
+		// object.setPosition(pos + glm::vec3(0, 0, -1) *deltaTime * movementSpeed);
+		deltaV += glm::vec3(0, 0, -1) * deltaTime * movementSpeed;
 		break;
 	case BACKWARD:
-		object.setPosition(pos + glm::vec3(0, 0, -1) * -deltaTime * movementSpeed);
+		// object.setPosition(pos + glm::vec3(0, 0, -1) * -deltaTime * movementSpeed);
+		deltaV += glm::vec3(0, 0, 1) * deltaTime * movementSpeed;
 		break;
 	case LEFT_C:
-		object.setPosition(pos + glm::vec3(1, 0, 0) * -deltaTime * movementSpeed);
+		// object.setPosition(pos + glm::vec3(1, 0, 0) * -deltaTime * movementSpeed);
+		deltaV += glm::vec3(-1, 0, 0) * deltaTime * movementSpeed;
 		break;
 	case RIGHT_C:
-		object.setPosition(pos + glm::vec3(1, 0, 0) * deltaTime * movementSpeed);
+		// object.setPosition(pos + glm::vec3(1, 0, 0) * deltaTime * movementSpeed);
+		deltaV += glm::vec3(1, 0, 0) * deltaTime * movementSpeed;
 		break;
 	case UP_C:
-		object.setPosition(pos + glm::vec3(0, 1, 0) * deltaTime * movementSpeed);
+		// object.setPosition(pos + glm::vec3(0, 1, 0) * deltaTime * movementSpeed);
+		deltaV += glm::vec3(0, 1, 0) * deltaTime * movementSpeed;
 		break;
 	case DOWN_C:
-		object.setPosition(pos + glm::vec3(0, 1, 0) * -deltaTime * movementSpeed);
+		// object.setPosition(pos + glm::vec3(0, 1, 0) * -deltaTime * movementSpeed);
+		deltaV += glm::vec3(0, -1, 0) * deltaTime * movementSpeed;
 		break;
 	}
+	update.DeltaVelocity = deltaV;
+	// update.Position = object.getPosition();
 
-	update.Data = object.getPosition();
-	object.setPosition(update.Positon);
-	glm::vec3 p = object.getPosition() - pos;
-	//renderer.addPosition(p);
 	return update;
 }
 void Player::update() {

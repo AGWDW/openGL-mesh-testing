@@ -44,8 +44,8 @@ namespace Render {
 
 			for (auto& mesh : *meshes) {
 				createModel(std::get<2>(mesh), { 0, 0, 0 }, p1, shader);
-				std::get<0>(mesh)->render();
 				std::get<1>(mesh)->bind();
+				std::get<0>(mesh)->render();
 			}
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);

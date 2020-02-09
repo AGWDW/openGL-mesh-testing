@@ -49,10 +49,13 @@ namespace Physics {
 	struct Update {
 		Object* Sender;
 		TAG Tag;
-		glm::vec3 Data;
-		glm::vec3 Positon;
-		std::vector<Face> Extra;
-		Update();
+		glm::vec3 Position;
+		glm::vec3 PrevPositon;
+		std::vector<Face> Vertices;
+		glm::vec3 DeltaVelocity;
+		glm::vec3 PrevVelocity;
+		Update(); 
+		static Update combine(std::vector<Update> updates);
 	};
 	template <typename T>
 	struct Clamp {
@@ -82,7 +85,6 @@ namespace Physics {
 		void clampAngularVelocity(const glm::vec3& max, const glm::vec3& min);
 		void clampAngularSpeed(const GLfloat& max, const GLfloat& min);
 
-		Update getUpdate();
 		void doUpdate(Update update);
 
 		// getters

@@ -1,9 +1,10 @@
 #include "Physics.h"
 namespace Physics {
 	Object::Object() {
-		setMass(100);
+		setMass(60);
 		setAcceleration({ 0, 0, 0 });
-		//Physics::addObject(*this);
+		setPosition({ 0, 0, 0 });
+		setVelocity({ 0, 0, 0 });
 	}
 	Object::Object(GLfloat mass, Material& material) {
 		setMass(mass);
@@ -207,20 +208,9 @@ namespace Physics {
 			}
 		}
 	}
-	Update Object::getUpdate() {
-		Update update_;
-		update_.Sender = this;
-		update_.Positon = position;
-		if (!isKinematic) {
-			position += velocity;
-			velocity += acceleration;
-		}
-		update_.Data = position;
-		update_.Tag = TAG::COLLISION;
-		return update_;
-	}
 	void Object::doUpdate(Update update) {
-		setPosition(update.Data);
+		velocity = update.DeltaVelocity;
+		position += velocity;
 	}
 
 	Collider::Collider() {
@@ -300,7 +290,22 @@ namespace Physics {
 	}
 	Update::Update() : Tag(Null) {
 		Sender = nullptr;
-		Data = { 0, 0, 0 };
-		Positon = { 0, 0, 0 };
+		Position = { 0, 0, 0 };
+		PrevPositon = { 0, 0, 0 };
+		DeltaVelocity = { 0, 0, 0 };
+		PrevVelocity = { 0, 0, 0 };
+	}
+	Update Update::combine(std::vector<Update> updates) {
+		Update res = Update();
+		res.Tag = Null;
+		for (auto& update : updates) {
+			res.Sender = update.Sender;
+			res.Vertices = update.Vertices;
+			res.PrevPositon = update.PrevPositon;
+			res.PrevVelocity = update.PrevVelocity;
+			res.DeltaVelocity += update.DeltaVelocity; 
+			res.Tag = COLLISION;
+		}
+		return res;
 	}
 };
