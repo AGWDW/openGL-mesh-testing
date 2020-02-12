@@ -176,23 +176,30 @@ void Game::doMovement() {
 		player.updatePosition(Game::deltaTime, world.getOccupiedChunk(player.getPosition()).getMeshes());
 	}
 	else {
+		GLfloat speed = 2.0f;
+		if (k[GLFW_KEY_LEFT_CONTROL]) {
+			speed = 5.0f;
+		}
+		else {
+			speed = 2.0f;
+		}
 		if (k[GLFW_KEY_W]) {
-			Game::mainCamera->GetPosition() += Game::mainCamera->GetFront() * 2.0f * deltaTime;
+			Game::mainCamera->GetPosition() += Game::mainCamera->GetFront() * glm::vec3(1, 0, 1) * speed * deltaTime;
 		}
 		if (k[GLFW_KEY_S]) {
-			Game::mainCamera->GetPosition() -= Game::mainCamera->GetFront() * 2.0f * deltaTime;
+			Game::mainCamera->GetPosition() -= Game::mainCamera->GetFront() * glm::vec3(1, 0, 1) * speed * deltaTime;
 		}
 		if (k[GLFW_KEY_A]) {
-			Game::mainCamera->GetPosition() -= Game::mainCamera->GetRight() * 2.0f * deltaTime;
+			Game::mainCamera->GetPosition() -= Game::mainCamera->GetRight() * glm::vec3(1, 0, 1) * speed * deltaTime;
 		}
 		if (k[GLFW_KEY_D]) {
-			Game::mainCamera->GetPosition() += Game::mainCamera->GetRight() * 2.0f * deltaTime;
+			Game::mainCamera->GetPosition() += Game::mainCamera->GetRight() * glm::vec3(1, 0, 1) * speed * deltaTime;
 		}
 		if (k[GLFW_KEY_SPACE]) {
-			Game::mainCamera->GetPosition() += glm::vec3(0, 1, 0) * 2.0f * deltaTime;
+			Game::mainCamera->GetPosition() += glm::vec3(0, 1, 0) * speed * deltaTime;
 		}
 		if (k[GLFW_KEY_LEFT_SHIFT]) {
-			Game::mainCamera->GetPosition() += glm::vec3(0, -1, 0) * 2.0f * deltaTime;
+			Game::mainCamera->GetPosition() += glm::vec3(0, -1, 0) * speed * deltaTime;
 		}
 	}
 }
