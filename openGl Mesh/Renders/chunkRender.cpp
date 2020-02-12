@@ -1,5 +1,8 @@
 #include "chunkRender.h"
 namespace Render {
+	ChunkMeshRender::ChunkMeshRender() {
+		canRender = GL_FALSE;
+	}
 	ChunkMeshRender::ChunkMeshRender(std::string shaderName) {
 		shader = new Shader(shaderName);
 		canRender = GL_FALSE;

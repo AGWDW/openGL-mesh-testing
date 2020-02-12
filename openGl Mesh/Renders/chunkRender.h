@@ -10,10 +10,7 @@ using Face = std::tuple <Buffer*, Texture*, glm::vec3>;
 namespace Render {
 	class ChunkMeshRender {
 	public:
-		ChunkMeshRender() {
-			canRender = GL_FALSE;
-			shader = SHADERS[BLOCK2];
-		}
+		ChunkMeshRender();
 		ChunkMeshRender(GLboolean init, std::string t);
 		ChunkMeshRender(std::string shaderName);
 		ChunkMeshRender(Shader* shader);

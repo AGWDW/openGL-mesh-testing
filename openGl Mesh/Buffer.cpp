@@ -160,7 +160,7 @@ void Buffer::resetData() {
 std::vector<GLfloat> Buffer::getVertices(GLboolean unique) {
 	std::vector<GLfloat> res;
 	if (!unique) {
-		for (int i = 0; i < bufferData.size(); i += 3) {
+		for (GLuint i = 0; i < (GLuint)bufferData.size(); i += structure.total_data_len) {
 			res.insert(res.end(), bufferData.begin() + i, bufferData.begin() + i + 3);
 		}
 	}
@@ -181,6 +181,24 @@ std::vector<GLfloat> Buffer::getVertices(GLboolean unique) {
 		}
 		for (auto& p : uniq) {
 			res.push_back(p.first);
+		}
+	}
+	return res;
+}
+std::vector<glm::vec3> Buffer::getVertices() {
+	glm::vec3 vertex;
+	std::vector<glm::vec3> res;
+	for (GLuint i = 0; i < (GLuint)bufferData.size(); i += structure.total_data_len) {
+		vertex = { bufferData[i], bufferData[i + 1] , bufferData[i + 2] };
+		GLboolean found = 0;
+		for (auto const& contence : res) {
+			if (contence == vertex) {
+				found = 1;
+				break;
+			}
+		}
+		if (!found) {
+			res.push_back(vertex);
 		}
 	}
 	return res;

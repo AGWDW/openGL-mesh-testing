@@ -30,6 +30,7 @@ void World::getNewChunkPositions() {
 }
 void World::generateFlatChunks(std::vector<glm::vec3> chunkPositions) {
 	chunks.resize(RENDERED_VOLUME);
+	chunks.reserve(RENDERED_VOLUME);
 	std::cout << "Started\n";
 	for (auto& pos : chunkPositions) {
 		Chunk chunk(pos, false);
@@ -66,6 +67,7 @@ void World::cleanUp() {
 }
 std::vector<Chunk*> World::getChunks() {
 	std::vector<Chunk*> res;
+	res.reserve(chunks.size());
 	for (auto& chunk : chunks) {
 		res.push_back(&chunk.first);
 	}

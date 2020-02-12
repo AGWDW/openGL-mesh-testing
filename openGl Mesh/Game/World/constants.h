@@ -4,16 +4,16 @@
 #include "../../Shaders/Shader.h"
 #include "../../Mesh.h"
 
-#define RENDER_DISTANCE 4
+#define RENDER_DISTANCE 2
 #define RENDERED_AREA RENDER_DISTANCE * RENDER_DISTANCE
 #define RENDERED_VOLUME RENDER_DISTANCE * RENDER_DISTANCE * RENDER_DISTANCE
-#define CHUNK_SIZE 8
+#define CHUNK_SIZE 2
 #define CHUNK_AREA CHUNK_SIZE * CHUNK_SIZE
 #define CHUNK_VOLUME CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE
 
 #define GRAVITY 9.81
 #define AIR_RESISTANCE 2
-#define PLAYER_SPEED 5
+#define PLAYER_SPEED 2
 
 using namespace Mesh;
 enum TEXTURE_NAMES {
@@ -25,7 +25,16 @@ enum SHADER_NAMES {
 	BLOCK2,
 	BLOCK3
 };
-
+enum class Move_Dir
+{
+	FORWARD,
+	BACKWARD,
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN,
+	Null
+};
 extern const std::array<Buffer*, 6> FACES;
 extern const std::vector<Texture*> TEXTURES;
 extern const std::vector<Shader*> SHADERS;

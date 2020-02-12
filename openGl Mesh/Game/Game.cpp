@@ -10,13 +10,13 @@ GLuint GameConfig::FPSlock = 0;
 Camera* Game::mainCamera = new Camera({ 0, 2, 0 });
 glm::vec3 Game::mouseData(0);
 std::array<GLboolean, 1024> Game::keys = std::array<GLboolean, 1024>();
-Player Game::player = Player(false);
+Player Game::player = Player();
 GLboolean Game::hasPlayer = GL_FALSE;
-Physics::Engine Game::physicsEng = Physics::Engine();
 #pragma endregion
 Game::Game() {
 	hasPlayer = false;
 	gameRunning = false;
+	lastFrameTime = -1.0f;
 	Game::mainCamera = new Camera({ 0, 2, 0 });
 	Game::mouseData = { 0, 0, -90 };
 	GameConfig::setup();
@@ -26,6 +26,7 @@ Game::Game(GLboolean hasPlayer) {
 	setupPlayer();
 	gameRunning = false;
 	Game::mouseData = { 0, 0, -90 };
+	lastFrameTime = -1.0f;
 	GameConfig::setup();
 }
 void Game::generateWorld() {
@@ -49,9 +50,6 @@ void Game::doLoop(glm::mat4 projection) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		showStuff();
-		Game::physicsEng.doUpdates(Game::world);
-		// rend.render(*Game::mainCamera, projection);
-
 
 		if (glfwWindowShouldClose(window)) gameRunning = false;
 
@@ -61,6 +59,7 @@ void Game::doLoop(glm::mat4 projection) {
 void Game::calcTimes() {
 	GLfloat frame = glfwGetTime();
 	deltaTime = frame - lastFrameTime;
+	if (lastFrameTime == -1) deltaTime = 1.0f / 60.0f;
 	lastFrameTime = frame;
 	frameRate = 1 / deltaTime;
 }
@@ -97,8 +96,7 @@ void Game::setWindow(GLFWwindow* window) {
 	this->window = window;
 }
 void Game::setupPlayer() {
-	//{ 0, 1, -1 }
-	player = Player({ 0, 0.01, 0 }, { 0, 5, -1 });
+	player = Player({ 0, 5, 0 }, { 0, 0, 5 });
 	player.create();
 }
 void Game::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mode) {
@@ -134,36 +132,38 @@ void Game::setupEventCB(GLFWwindow* window) {
 	glfwSetCursorPosCallback(window, Game::mouseCallBack);
 }
 void Game::doMovement() {
-	std::vector<Physics::Update> updates;
-	auto move = [](Camera_Movement dir, GLfloat deltaTime, std::vector<Physics::Update>& updates) {
-		if (Game::hasPlayer) {
-			updates.push_back(Game::player.processMovement(dir, deltaTime));
-		}
-		else {
-			Game::mainCamera->ProcessMovement(dir, deltaTime);
-		}
-	};
-	if (Game::keys[GLFW_KEY_W] || Game::keys[GLFW_KEY_UP]) {
-		move(FORWARD, deltaTime, updates);
+	auto& k = Game::keys;
+	player.setVelocity({ 0, player.getVelocity().y, 0 });
+	if (k[GLFW_KEY_W]) {
+		player.move(Move_Dir::FORWARD);
 	}
-	if (Game::keys[GLFW_KEY_S] || Game::keys[GLFW_KEY_DOWN]) {
-		move(BACKWARD, deltaTime, updates);
+	if (k[GLFW_KEY_S]) {
+		player.move(Move_Dir::BACKWARD);
 	}
-	if (Game::keys[GLFW_KEY_D] || Game::keys[GLFW_KEY_RIGHT]) {
-		move(RIGHT_C, deltaTime, updates);
+	if (k[GLFW_KEY_A]) {
+		player.move(Move_Dir::LEFT);
 	}
-	if (Game::keys[GLFW_KEY_A] || Game::keys[GLFW_KEY_LEFT]) {
-		move(LEFT_C, deltaTime, updates);
+	if (k[GLFW_KEY_D]) {
+		player.move(Move_Dir::RIGHT);
 	}
-	if (Game::keys[GLFW_KEY_SPACE]) {
-		move(UP_C, deltaTime, updates);
+	if (k[GLFW_KEY_SPACE]) {
+		player.move(Move_Dir::UP);
 	}
-	if (Game::keys[GLFW_KEY_LEFT_SHIFT]) {
-		move(DOWN_C, deltaTime, updates);
+
+	if (k[GLFW_KEY_UP]) {
+		player.getCamera().GetPosition() += glm::vec3(0, 1, 0) * 2.0f * deltaTime;
 	}
-	//std::cout << updates.size() << "\n";
-	auto u = Physics::Update::combine(updates);
-	Game::physicsEng.addUpdate(u);
+	if (k[GLFW_KEY_DOWN]) {
+		player.getCamera().GetPosition() += glm::vec3(0, -1, 0) * 2.0f * deltaTime;
+	}
+	if (k[GLFW_KEY_LEFT]) {
+		player.getCamera().GetPosition() += glm::vec3(-1, 0, 0) * 2.0f * deltaTime;
+	}
+	if (k[GLFW_KEY_RIGHT]) {
+		player.getCamera().GetPosition() += glm::vec3(1, 0, 0) * 2.0f * deltaTime;
+	}
+
+	player.updatePosition(Game::deltaTime, world.getOccupiedChunk(player.getPosition()).getMeshes());
 }
 void Game::cleanUp() {
 	world.cleanUp();

@@ -13,8 +13,7 @@
 
 //#include "Player/Camera.h"
 #include "Player/Player.h"
-//#include "World/World.h"
-#include "World/PhysicsEngine.h"
+#include "World/World.h"
 struct GameConfig {
 	static GLboolean showFPS;
 	static glm::vec3 backgroundCol;
@@ -47,7 +46,6 @@ private:
 	GLuint frameRate;
 	GLboolean gameRunning;
 	World world;
-	static Physics::Engine physicsEng;
 	static GLboolean hasPlayer;
 	static Player player;
 	GLfloat lastFrameTime;

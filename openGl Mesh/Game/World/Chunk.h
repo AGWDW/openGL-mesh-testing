@@ -2,7 +2,6 @@
 #include <chrono>
 #include "../Player/Camera.h"
 #include "constants.h"
-#include "Physics.h"
 
 #include <map>
 using namespace Mesh;
@@ -15,7 +14,6 @@ public:
 	Chunk();
 	Chunk(glm::vec3 pos, GLboolean create = false);
 	void create();
-	GLboolean checkCollision(Physics::Update& update);
 	std::vector<Face*> getMeshes();
 	void cleanUp();
 	std::vector<std::pair<GLuint, GLuint>>& getCompressBlocks();
@@ -28,12 +26,10 @@ public:
 private:
 	GLboolean null;
 	std::vector<Face> meshes;
-	Physics::Object object;
 	std::vector<std::pair<GLuint, GLuint>> compressedBlocks;
 	std::vector<std::pair<Face, GLuint>> compressedMesh;
 
 	std::vector<std::pair<GLuint, GLuint>>& compressBlocks();
 	std::vector<std::pair<Face, GLuint>>& compressMesh();
-	void sortMesh();
 };
 

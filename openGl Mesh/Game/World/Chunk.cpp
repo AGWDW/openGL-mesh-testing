@@ -2,12 +2,8 @@
 Chunk::Chunk() {
 	null = GL_TRUE;
 }
-Chunk::Chunk(glm::vec3 pos, GLboolean create) : object((GLfloat)100.0f, { position, (GLfloat)1 }) {
+Chunk::Chunk(glm::vec3 pos, GLboolean create) {
 	position = pos;
-	object.setKinematic(GL_TRUE);
-	object.setPhysical(GL_TRUE);
-	object.setPosition(position);
-	Physics::Collider collider(position, 1);
 	null = GL_FALSE;
 	if (create) {
 		this->create();
@@ -95,29 +91,6 @@ std::vector<std::pair<GLuint, GLuint>>& Chunk::getCompressBlocks() {
 std::vector<std::pair<Face, GLuint>>& Chunk::getCompressMesh() {
 	return compressedMesh;
 }
-/*void Chunk::sortMesh() {
-	std::map<int, std::vector<FaceMesh>> seperated;
-	for (auto& mesh : meshes) {
-		int location = 0;
-		for (auto& buffer : mesh.comboOf) {
-			location += (int)buffer;
-		}
-		if (!location) {
-			location = (int)mesh.getBuffer();
-		}
-		try {
-			seperated[location].push_back(mesh);
-		}
-		catch (std::exception e) {
-			seperated.insert({ location, { mesh } });
-		}
-	}
-	std::vector<FaceMesh> res;
-	for (auto& sep : seperated) {
-		res.insert(res.end(), sep.second.begin(), sep.second.end());
-	}
-	meshes = res;
-}*/
 
 std::vector<Face*> Chunk::getMeshes() {
 	std::vector<Face*> res;
@@ -184,31 +157,4 @@ GLuint Chunk::getBlock_safe(const glm::vec3 inChunkPosition, std::vector<Chunk*>
 }
 GLboolean Chunk::isNull() {
 	return null;
-}
-GLboolean Chunk::checkCollision(Physics::Update& update) {
-	for (auto& chunkFace : this->meshes) {
-		std::array<glm::vec3, 2> cubeCorners = {
-				glm::vec3(0) + std::get<2>(chunkFace), glm::vec3(1, 1, -1) + std::get<2>(chunkFace)
-		};
-		for (auto& playerMesh : update.Vertices) {
-			auto meshPos = update.PrevPositon + update.DeltaVelocity + update.PrevVelocity;
-			std::array<glm::vec3, 8> playerCorners = {
-				glm::vec3(0, 0, -1) + meshPos, glm::vec3(1, 0, -1) + meshPos,
-				glm::vec3(0, 1, -1) + meshPos, glm::vec3(1, 1, -1) + meshPos,
-
-				glm::vec3(0, 1, 0) + meshPos, glm::vec3(1, 1, 0) + meshPos,
-				glm::vec3(0, 0, 0) + meshPos, glm::vec3(1, 0, 0) + meshPos
-			};
-			for (auto& meshVertex : playerCorners) {
-				if (meshVertex.x <= cubeCorners[1].x && meshVertex.x >= cubeCorners[0].x) {
-					if (meshVertex.y <= cubeCorners[1].y && meshVertex.y >= cubeCorners[0].y) {
-						if (meshVertex.z >= cubeCorners[1].z && meshVertex.z <= cubeCorners[0].z) {
-							return GL_TRUE;
-						}
-					}
-				}
-			}
-		}
-	}
-	return GL_FALSE;
 }

@@ -62,7 +62,8 @@ public:
 	void draw();
 	void addPositions(std::vector<glm::mat4>& positions);
 	void resetData();
-	std::vector<GLfloat> getVertices(GLboolean unique = true);
+	std::vector<GLfloat> getVertices(GLboolean unique);
+	std::vector<glm::vec3> getVertices();
 private:
 	GLuint VBO;
 	GLuint VAO;
