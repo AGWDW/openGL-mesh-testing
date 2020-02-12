@@ -1,5 +1,6 @@
 #pragma once
 #include <chrono>
+#include <gtc/noise.hpp>
 #include "../Player/Camera.h"
 #include "constants.h"
 

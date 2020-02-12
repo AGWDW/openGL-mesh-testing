@@ -172,6 +172,8 @@
     <None Include="Shaders\block3_v.gls" />
     <None Include="Shaders\block_f.gls" />
     <None Include="Shaders\block_v.gls" />
+    <None Include="Shaders\skybox_f.gls" />
+    <None Include="Shaders\skybox_v.gls" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h" />

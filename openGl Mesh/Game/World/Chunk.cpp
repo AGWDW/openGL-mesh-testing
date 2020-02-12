@@ -16,6 +16,24 @@ void Chunk::create() {
 }
 void Chunk::createBlocks() {
 	blocks.fill(1);
+	//if (position.y >= -CHUNK_SIZE) {
+	//	for (GLushort x = 0; x < CHUNK_SIZE; x++) {
+	//		for (GLushort z = 0; z < CHUNK_SIZE; z++) {		
+	//			for (GLushort y = 8; y < 16; y++) {
+	//				blocks[getBlockIndex({ x, y, z })] = 1;
+	//			}
+	//			/*GLushort noise = std::rand() % CHUNK_SIZE;
+	//			if (noise > CHUNK_SIZE) noise = CHUNK_SIZE;
+	//			for (GLushort i = 0; i < noise; i++) {
+	//				blocks[getBlockIndex({ x, i, z })] = 1;
+	//			}*/
+	//		}
+	//		
+	//	}
+	//}
+	//else {
+	//	blocks.fill(1);
+	//}
 }
 void Chunk::createMesh(std::vector<Chunk*> chunks) {
 	for (GLint x = 0; x < CHUNK_SIZE; x++) {
@@ -111,8 +129,8 @@ GLuint Chunk::getBlock_unsafe(glm::ivec3 pos) {
 	}
 }
 GLuint Chunk::getBlock_safe(const glm::vec3 inChunkPosition, std::vector<Chunk*> chunks) {
-	if (inChunkPosition.x >= 0 && inChunkPosition.y >= 0 && inChunkPosition.z >= 0) {
-		if (inChunkPosition.x < CHUNK_SIZE && inChunkPosition.y < CHUNK_SIZE && inChunkPosition.z < CHUNK_SIZE) {
+	if (glm::all(glm::greaterThanEqual(inChunkPosition, glm::vec3(0)))) {
+		if (glm::all(glm::lessThan(inChunkPosition, glm::vec3(CHUNK_SIZE)))) {
 			return blocks[getBlockIndex(inChunkPosition)];
 		}
 	}

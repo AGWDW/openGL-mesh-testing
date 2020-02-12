@@ -26,7 +26,7 @@ int main() {
 		shader->setUp();
 	}
 
-	Game game(true);
+	Game game(0, 1);
 	// GameConfig::showFPS = true;
 	game.setWindow(window);
 	game.generateWorld();

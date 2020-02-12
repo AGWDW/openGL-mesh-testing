@@ -27,11 +27,13 @@ const std::array<Buffer*, 6> FACES = {
 const std::vector<Texture*>TEXTURES = {
 	new Texture("grass", ""),
 	new Texture("player/bottom", ""),
-	new Texture("player/top", "")
+	new Texture("player/top", ""),
+	new Texture("skybox", "")
 };
 const std::vector<Shader*>SHADERS = {
 	new Shader("block2"),
-	new Shader("block3")
+	new Shader("block3"),
+	new Shader("skybox")
 };
 GLint getBlockIndex(glm::vec3 position) {
 	position.y = std::abs(position.y);

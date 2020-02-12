@@ -28,7 +28,7 @@ class Game
 {
 public:
 	Game();
-	Game(GLboolean hasPlayer);
+	Game(GLboolean hasPlayer, GLboolean hasSkybox);
 	void generateWorld();
 	void setupPlayer();
 	void update();
@@ -48,8 +48,10 @@ private:
 	World world;
 	static GLboolean hasPlayer;
 	static Player player;
+	GLboolean hasSkybox;
 	GLfloat lastFrameTime;
 	glm::mat4 projection;
+	GLuint SBVAO;
 	// blockupdates
 	void showFPS();
 	void calcTimes();
@@ -60,4 +62,6 @@ private:
 	static void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mode);
 	static void mouseCallBack(GLFWwindow* window, double xPos, double yPos);
 	void doMovement();
+	void makeSkybox(std::string skybox);
+	void showSkybox();
 };
