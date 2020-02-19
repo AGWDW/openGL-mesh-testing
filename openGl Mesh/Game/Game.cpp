@@ -36,7 +36,7 @@ Game::Game(GLboolean hasPlayer, GLboolean hasSkybox) {
 }
 
 void Game::generateWorld() {
-	world = World(1, 1);
+	world = World(1, 0);
 }
 void Game::update() {
 
@@ -140,6 +140,7 @@ void Game::setupEventCB(GLFWwindow* window) {
 	glfwSetKeyCallback(window, Game::keyCallBack);
 	glfwSetCursorPosCallback(window, Game::mouseCallBack);
 }
+GLboolean alt = 0;
 void Game::doMovement() {
 	auto& k = Game::keys;
 	GLfloat speed = 9.0f;
@@ -154,6 +155,9 @@ void Game::doMovement() {
 	if (Game::hasPlayer ) {
 		player.setVelocity({ 0, player.getVelocity().y, 0 });
 		if (k[GLFW_KEY_LEFT_ALT]) {
+			alt = !alt;
+		}
+		if (alt) {
 			if (k[GLFW_KEY_W]) {
 				player.move(Move_Dir::FORWARD);
 			}

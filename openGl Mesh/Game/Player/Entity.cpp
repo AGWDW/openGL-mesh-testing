@@ -62,6 +62,9 @@ void Entity::updatePosition(GLfloat deltaTime, World& world) {
 	if (collisions.z == 1) {
 		if (vel.z > 0) vel.z = 0;
 	}
+	if (collisions.z == -1) {
+		if (vel.z < 0) vel.z = 0;
+	}
 
 	if (!grounded) vel.y -= GRAVITY * deltaTime;
 	else if (vel.y < 0) vel.y = 0;
@@ -245,17 +248,14 @@ glm::vec3 Entity::determinCollision(World& world, glm::vec3 deltaV) {
 			//if (diff.y > -1) return 1;
 			break;
 		case FRONT:
-			// if (diff.z < 1) return 1;
+			if (diff.z < 1.04 && isBehind(p, rayEnd)) res.z = -1;
 			break;
 		case BACK:
-			if (diff.z < 1.04 && isInFront(p, rayEnd)) res.z = 1;
+			if (diff.z > -1.04 && diff.z < 0 && isInFront(p, rayEnd)) res.z = 1;
 			break;
 		case LEFT: 
 		{
-			GLboolean x = isRight(p, rayEnd);
-			if (diff.x > -1.04 && diff.x < 0 && x) {
-				res.x = 1;
-			}
+			if (diff.x > -1.04 && diff.x < 0 && isRight(p, rayEnd)) res.x = 1;
 			break; 
 		}
 		case RIGHT: 
