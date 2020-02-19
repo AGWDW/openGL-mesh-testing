@@ -5,10 +5,9 @@
 #include "../../Mesh.h"
 
 #define RENDER_DISTANCE 2
-#define CHUNK_DEPTH 4
 #define RENDERED_AREA RENDER_DISTANCE * RENDER_DISTANCE
 #define RENDERED_VOLUME RENDER_DISTANCE * RENDER_DISTANCE * RENDER_DISTANCE
-#define CHUNK_SIZE 4
+#define CHUNK_SIZE 2
 #define CHUNK_AREA CHUNK_SIZE * CHUNK_SIZE
 #define CHUNK_VOLUME CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE
 
@@ -45,4 +44,4 @@ extern const std::vector<Texture*> TEXTURES;
 extern const std::vector<Shader*> SHADERS;
 
 GLint getBlockIndex(glm::vec3 position);
-GLint getChunkIndex(glm::vec3 position, GLboolean reduced = GL_TRUE);
+GLint getChunkIndex(glm::vec3 position, GLboolean absalute = GL_TRUE, GLboolean reduced = GL_TRUE);
