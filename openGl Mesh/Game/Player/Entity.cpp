@@ -102,7 +102,7 @@ void Entity::render(glm::mat4 projection, Camera* cam) {
 }
 GLboolean isAbove(glm::vec3 above, glm::vec3 bellow, GLboolean isCube = 1) {
 	if (isCube) {
-		std::pair<glm::vec3, glm::vec3> corners = { bellow + glm::vec3(1), bellow - glm::vec3(1) };
+		std::pair<glm::vec3, glm::vec3> corners = { bellow + glm::vec3(0.5), bellow - glm::vec3(0.5) };
 		auto& top = corners.first;
 		auto& bottom = corners.second;
 		if (above.x < top.x && above.x > bottom.x) {
@@ -122,7 +122,7 @@ GLboolean isAbove(glm::vec3 above, glm::vec3 bellow, GLboolean isCube = 1) {
 }
 GLboolean isBellow(glm::vec3 bellow, glm::vec3 above, GLboolean isCube = 1) {
 	if (isCube) {
-		std::pair<glm::vec3, glm::vec3> corners = { above + glm::vec3(0.97), above - glm::vec3(0.97) };
+		std::pair<glm::vec3, glm::vec3> corners = { above + glm::vec3(0.5f), above - glm::vec3(0.5f) };
 		auto& top = corners.first;
 		auto& bottom = corners.second;
 		if (bellow.x < top.x && bellow.x > bottom.x) {
@@ -142,7 +142,7 @@ GLboolean isBellow(glm::vec3 bellow, glm::vec3 above, GLboolean isCube = 1) {
 }
 GLboolean isRight(glm::vec3 right, glm::vec3 left, GLboolean isCube = 1) {
 	if (isCube) {
-		std::pair<glm::vec3, glm::vec3> corners = { left + glm::vec3(0.9), left - glm::vec3(0.9) };
+		std::pair<glm::vec3, glm::vec3> corners = { left + glm::vec3(0.5f), left - glm::vec3(0.5f) };
 		auto& top = corners.first;
 		auto& bottom = corners.second;
 		if (right.y < top.y && right.y > bottom.y) {
@@ -162,7 +162,7 @@ GLboolean isRight(glm::vec3 right, glm::vec3 left, GLboolean isCube = 1) {
 }
 GLboolean isLeft(glm::vec3 left, glm::vec3 right, GLboolean isCube = 1) {
 	if (isCube) {
-		std::pair<glm::vec3, glm::vec3> corners = { right + glm::vec3(1), right - glm::vec3(1) };
+		std::pair<glm::vec3, glm::vec3> corners = { right + glm::vec3(0.5f), right - glm::vec3(0.5f) };
 		auto& top = corners.first;
 		auto& bottom = corners.second;
 		if (left.y < top.y && left.y > bottom.y) {
@@ -182,7 +182,7 @@ GLboolean isLeft(glm::vec3 left, glm::vec3 right, GLboolean isCube = 1) {
 }
 GLboolean isInFront(glm::vec3 front, glm::vec3 behind, GLboolean isCube = 1) {
 	if (isCube) {
-		std::pair<glm::vec3, glm::vec3> corners = { behind + glm::vec3(1), behind - glm::vec3(1) };
+		std::pair<glm::vec3, glm::vec3> corners = { behind + glm::vec3(0.5f), behind - glm::vec3(0.5f) };
 		auto& top = corners.first;
 		auto& bottom = corners.second;
 		if (front.x < top.x && front.x > bottom.x) {
@@ -202,7 +202,7 @@ GLboolean isInFront(glm::vec3 front, glm::vec3 behind, GLboolean isCube = 1) {
 }
 GLboolean isBehind(glm::vec3 behind, glm::vec3 front, GLboolean isCube = 1) {
 	if (isCube) {
-		std::pair<glm::vec3, glm::vec3> corners = { front + glm::vec3(1), front - glm::vec3(1) };
+		std::pair<glm::vec3, glm::vec3> corners = { front + glm::vec3(0.5f), front - glm::vec3(0.5f) };
 		auto& top = corners.first;
 		auto& bottom = corners.second;
 		if (behind.x < top.x && behind.x > bottom.x) {
@@ -222,42 +222,51 @@ GLboolean isBehind(glm::vec3 behind, glm::vec3 front, GLboolean isCube = 1) {
 }
 
 glm::vec3 Entity::determinCollision(World& world, glm::vec3 deltaV) {
-	auto rayOrigin = getCenter();
+	auto& rayOrigin = pos;
 	auto rayEnd = rayOrigin + deltaV;
-	auto r = glm::round(rayEnd);
 	Chunk& chunkOccupied = world.getOccupiedChunk(rayEnd);
-	std::pair<glm::vec3, glm::vec3> bounds = { rayEnd + glm::vec3(1), rayEnd - glm::vec3(1) };
+	auto vertices = getVertices();
 
 	if (chunkOccupied.isNull()) return { 0, 0, 0 };
 	glm::vec3 res(0);
-	for (auto& mesh : /*chunkOccupied.getMeshes()*//**/world.getWorldMesh()/**/) {
+	for (auto& mesh : world.getWorldMesh()) {
 		Face& face = *mesh;
 		glm::vec3 p = std::get<2>(face);
 		Buffer* b = std::get<0>(face);
-		glm::vec3 diff = rayEnd - p;
-		switch (b->type)
-		{
-		case TOP:
-			if (diff.y < 1.005f && isBellow(p, rayEnd)) res.y = -1;
-			break;
-		case BOTTOM:
-			//if (diff.y > -1) return 1;
-			break;
-		case FRONT:
-			if (diff.z < 1.005 && isBehind(p, rayEnd)) res.z = -1; // -1
-			break;
-		case BACK:
-			if (diff.z > -1.005 && diff.z < -0.0f && isInFront(p, rayEnd)) res.z = 1; // 1
-			break;
-		case LEFT: 
-			if (diff.x > -1.005 && diff.x < -0.0f && isRight(p, rayEnd)) res.x = 1; // 1
-			break; 
-		case RIGHT: 
-			if (diff.x < 1.005 && isLeft(p, rayEnd)) res.x = -1; // 1.03 -1
-			break;
+		std::pair<glm::vec3, glm::vec3> corners = { p + glm::vec3(0.5f), p - glm::vec3(0.5f) };
+		auto& max = corners.first;
+		auto& min = corners.second;
+		for (auto vertex : vertices) {
+			vertex += rayEnd;
+			if (glm::all(glm::lessThanEqual(vertex, max)) && glm::all(glm::greaterThanEqual(vertex, min)) /*|| true*/) {
+				switch (b->type)
+				{
+				case TOP:
+					//if (!isAbove(rayEnd, p)) break;
+					res.y = -1;
+					break;
+				case BOTTOM:
+					break;
+				case LEFT:
+					if (!isRight(rayEnd, p)) break;
+					res.x = -1;
+					break;
+				case RIGHT:
+					if (!isLeft(rayEnd, p)) break;
+					res.x = 1;
+					break;
+				case FRONT:
+					if (!isBehind(rayEnd, p)) break;
+					res.z = 1;
+					break;
+				case BACK:
+					if (!isInFront(rayEnd, p)) break;
+					res.z = -1;
+					break;
+				}
+			}
+			
 		}
-
-		
 	}
 
 	return res;
@@ -270,21 +279,21 @@ glm::vec3 Entity::getCenter(glm::vec3 pos) {
 }
 std::vector<glm::vec3> Entity::getVertices() {
 	std::vector<glm::vec3> res;
-	std::map<glm::vec3, GLubyte> unique;
 	for (auto& face : body) {
 		Buffer* b = std::get<0>(face);
-		auto t = b->getVertices();
 		for (auto& vertex : b->getVertices()) {
-			try {
-				unique.insert({ vertex, 0 });
+			GLboolean found = 0;
+			for (auto const& contence : res) {
+				if (contence == vertex) {
+					found = 1;
+					break;
+				}
 			}
-			catch (std::exception e) {
-
+			if (!found) {
+				res.push_back(vertex);
 			}
 		}
 	}
-	for (auto& pair : unique) {
-		res.push_back(pair.first);
-	}
 	return res;
+	
 }
