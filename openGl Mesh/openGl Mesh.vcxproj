@@ -180,6 +180,9 @@
     <None Include="Shaders\block2_v.gls" />
     <None Include="Shaders\block3_f.gls" />
     <None Include="Shaders\block3_v.gls" />
+    <None Include="Shaders\crosshair_f.gls" />
+    <None Include="Shaders\crosshair_g.gls" />
+    <None Include="Shaders\crosshair_v.gls" />
     <None Include="Shaders\skybox_f.gls" />
     <None Include="Shaders\skybox_v.gls" />
   </ItemGroup>
@@ -220,6 +223,7 @@
   <ItemGroup>
     <Image Include="Textures\cobblestone_diff.png" />
     <Image Include="Textures\cobblestone_spec.png" />
+    <Image Include="Textures\crosshair.png" />
     <Image Include="Textures\grass\back.png" />
     <Image Include="Textures\grass\bottom.png" />
     <Image Include="Textures\grass\front.png" />

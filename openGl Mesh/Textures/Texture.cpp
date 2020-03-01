@@ -7,39 +7,47 @@ Texture::Texture(std::string name, std::string overload) {
 Texture::Texture(std::string name, GLboolean is2D) {
 	this->name = name;
 	this->is2D = is2D;
-	if (is2D) {
+	/*if (is2D) {
 		created = load2D(name);
 	}
 	else {
 		created = load3D(name);
-	}
+	}*/
 }
 Texture::Texture(GLboolean loadTex) {
 	name = "";
 	is2D = false;
 	created = false;
 	if (loadTex) {
-		created = load3D("grass");
+		std::string s = "grass";
+		created = load3D(s);
 	}
 }
 GLboolean Texture::load2D(std::string& name) {
-	name = name + ".png";
+	name = "Textures/" + name + ".png";
 
 	glGenTextures(1, &texMap);
 	// diffuse
 	unsigned char* image = SOIL_load_image(name.c_str(), &dimentions.x, &dimentions.y, 0, SOIL_LOAD_RGBA);
-	if (!image) std::cout << "texture error" << std::endl;
+	if (!image) { 
+		std::cout << "texture error" << std::endl; 
+		return 0;
+	}
 	glBindTexture(GL_TEXTURE_2D, texMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dimentions.x, dimentions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
-	SOIL_free_image_data(image);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// SOIL_free_image_data(image);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 	return GL_TRUE;
 }
-GLboolean Texture::load3D(const std::string& name) {
+GLboolean Texture::load3D(std::string& name) {
 	this->name = name;
 	is2D = GL_FALSE;
 	std::vector<std::string> faces = {
@@ -107,4 +115,11 @@ GLboolean& Texture::get2D() {
 }
 glm::ivec2& Texture::getDimentions() {
 	return dimentions;
+}
+void Texture::destroy() {
+	created = 0;
+	dimentions = glm::ivec2(0);
+	is2D = 0;
+	name = "";
+	glDeleteTextures(1, &texMap);
 }

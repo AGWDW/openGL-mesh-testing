@@ -81,6 +81,9 @@
     <None Include="Shaders\skybox_v.gls" />
     <None Include="Shaders\block2_f.gls" />
     <None Include="Shaders\block2_v.gls" />
+    <None Include="Shaders\crosshair_v.gls" />
+    <None Include="Shaders\crosshair_f.gls" />
+    <None Include="Shaders\crosshair_g.gls" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SOIL2\etc1_utils.h">
@@ -215,6 +218,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Textures\grass\top.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\crosshair.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
