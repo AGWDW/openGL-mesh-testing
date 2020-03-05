@@ -120,7 +120,7 @@ void chunk_column::createChunks() {
 ChunkPosition& chunk_column::getPosition() {
 	return pos;
 }
-Blocks& chunk_column::getBlock(glm::ivec3 blockPos) {
+Blocks& chunk_column::getBlock(glm::ivec3 blockPos, Chunk*& chunk_) {
 	blockPos.y += CHUNK_SIZE;
 	GLbyte index = std::abs(blockPos.y) - 1;
 	if (index % 2 != 0) index -= 1; // if odd
@@ -130,5 +130,13 @@ Blocks& chunk_column::getBlock(glm::ivec3 blockPos) {
 	blockPos.y %= CHUNK_SIZE;
 
 	index = 4;
+	chunk_ = &chunks[index];
 	return chunks[index].blocks[getBlockIndex(blockPos)];
+}
+std::vector<Chunk*> chunk_column::getSubChunks() {
+	std::vector<Chunk*> res;
+	for (auto& chunk : chunks) {
+		res.push_back(&chunk);
+	}
+	return res;
 }

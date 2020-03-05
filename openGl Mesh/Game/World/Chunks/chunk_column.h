@@ -18,7 +18,8 @@ public:
 	void addChunks(std::vector<Chunk> chunks, GLboolean sort = 0);
 	void createMesh(std::vector<chunk_column*> columns);
 	ChunkPosition& getPosition();
-	Blocks& getBlock(glm::ivec3 blockPos);
+	Blocks& getBlock(glm::ivec3 blockPos, Chunk*& chunk_);
+	std::vector<Chunk*> getSubChunks();
 private:
 	ChunkPosition pos;
 	ChunkHeightMap heightMap;

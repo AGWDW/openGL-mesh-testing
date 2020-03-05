@@ -21,7 +21,7 @@ public:
 	GLboolean& get2D();
 	glm::ivec2& getDimentions();
 	void unBind();
-	GLboolean load3D(std::string& name);
+	GLboolean load3D();
 	GLboolean load2D(std::string& name);
 	void destroy();
 private:

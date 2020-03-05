@@ -104,6 +104,7 @@ void Buffer::destroy() {
 void Buffer::endRender() {
 	glBindVertexArray(0);
 }
+
 void Buffer::addPositions(std::vector<glm::mat4>& positions) {
 	GLuint instanceVBO;
 	glGenBuffers(1, &instanceVBO);

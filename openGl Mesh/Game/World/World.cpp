@@ -12,15 +12,15 @@ World::World(GLboolean gen, GLboolean terrain, GLboolean isDynamic) {
 void World::getNewChunkPositions(GLboolean flat) {
 	auto start = std::chrono::high_resolution_clock::now();
 	std::vector<glm::vec2> chunkPositions = getNewChunkPositions(glm::vec2(0));
-	auto stop = std::chrono::high_resolution_clock::now();
-	auto duration  = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	std::cout << "position duration: " << duration.count() << " microsecconds\n";
 	if (flat) {
 		generateFlatChunks(chunkPositions);
 	}
 	else {
 		generateTerrain(chunkPositions);
 	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	std::cout << "Terrain and Positions: " << duration.count() << " microsecconds\n";
 }
 std::vector<glm::vec2> World::getNewChunkPositions(glm::vec2 origin, GLint renderDist) {
 	std::vector<glm::vec2> chunkPositions;
@@ -55,7 +55,7 @@ void World::generateFlatChunks(std::vector<glm::vec2> chunkPositions) {
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	std::cout << "World created (Chunk count: " << chunks.size() << "): " << duration.count() << " microseconds" << std::endl;
 }
-HeightMapWorld createHeightMap(std::vector<glm::vec3> chunkPositions) {
+/*HeightMapWorld createHeightMap(std::vector<glm::vec3> chunkPositions) {
 	HeightMapWorld res;
 	GLushort i = 0;
 	for (GLubyte j = 0; j < res.size(); j++) {
@@ -81,28 +81,32 @@ HeightMapWorld createHeightMap(std::vector<glm::vec3> chunkPositions) {
 		chunk.second = i - 1;
 	}
 	return res;
-}
+}*/
 void World::generateTerrain(std::vector<glm::vec2> chunkPositions) {
 	std::cout << "Started\n";
 	GLubyte i = 0;
+	auto start = std::chrono::high_resolution_clock::now();
 	world_generation wg(CHUNK_SIZE*2, 3, 1, { {1.5f, 1.5f}, {0.75f, 0.75f}, {0.325f, 0.325f} });
 	for (GLuint i = 0; i < chunkPositions.size(); i++) {
 		auto& pos = chunkPositions[i];
 		chunk_column chunk(pos);
 		chunks.push_back({ chunk, GL_TRUE });
 	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	std::cout << "Blocks: " << duration.count() << " microseconds" << std::endl;
 
-	auto start = std::chrono::high_resolution_clock::now();
 	for (auto& pair : chunks) {
 		chunk_column& chunk = pair.first;
 		chunk.createMesh(getChunks());
 	}
+	start = std::chrono::high_resolution_clock::now();
 	genWorldMesh();
+	stop = std::chrono::high_resolution_clock::now();
 	drawable.setUp(worldMesh);
 
-	auto stop = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	std::cout << "World created (Chunk count: " << chunks.size() << " size: " << CHUNK_SIZE * std::pow(chunks.size(), 1.0f / 3.0f) << "): " << duration.count() << " microseconds" << std::endl;
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	std::cout << "GenMesh Function: " << duration.count() << " microseconds" << std::endl;
 }
 
 void World::render(Camera& c, glm::mat4 projection) {
@@ -204,7 +208,7 @@ void World::breakBlock(glm::vec3 pos, glm::vec3 front) {
 	std::cout << "__________________________________________________________________ " << std::endl;
 	// pos.y += 0.5f;
 	GLboolean changed = 0;
-	chunk_column* chunk = nullptr;
+	Chunk* chunk = nullptr;
 	glm::vec3 lookPos = pos;
 	for (GLubyte i = 0; i < PLAYER_REACH; i++) {
 		lookPos += front;
@@ -219,7 +223,7 @@ void World::breakBlock(glm::vec3 pos, glm::vec3 front) {
 		}
 	}
 	if (changed) {
-		auto chunks_ = getChunks();
+		auto chunks_ = getSubChunks();
 		/*for (auto& chunk : chunks) {
 			chunk.first.createMesh(chunks_);
 		}*/
@@ -229,14 +233,13 @@ void World::breakBlock(glm::vec3 pos, glm::vec3 front) {
 		drawable.setUp(worldMesh);
 	}
 }
-Blocks& World::getBlock(glm::ivec3 blockPos, chunk_column*& chunk_) {
+Blocks& World::getBlock(glm::ivec3 blockPos, Chunk*& chunk_) {
 	glm::vec3 subChunkPos = reduceToMultiple(blockPos, CHUNK_SIZE);
 	subChunkPos.y = 0;
 	glm::vec2 chunkPos(subChunkPos.x, subChunkPos.z);
 	for (auto& chunk : chunks) {
 		if (chunk.first.getPosition() == chunkPos) {
-			chunk_ = &chunk.first;
-			auto& block = chunk.first.getBlock(blockPos - (glm::ivec3)subChunkPos);
+			auto& block = chunk.first.getBlock(blockPos - (glm::ivec3)subChunkPos, chunk_);
 			return block;
 		}
 	}
@@ -251,7 +254,7 @@ void World::placeBlock(glm::vec3 pos, glm::vec3 front) {
 	std::cout << "__________________________________________________________________ " << std::endl;
 	// pos.y += 0.5f;
 	GLboolean changed = 0;
-	chunk_column* chunk = nullptr;
+	Chunk* chunk = nullptr;
 	glm::vec3 lookPos = pos + front * (GLfloat)(PLAYER_REACH - 1);
 	for (GLubyte i = 0; i < PLAYER_REACH; i++) {
 		lookPos -= front;
@@ -273,10 +276,24 @@ void World::placeBlock(glm::vec3 pos, glm::vec3 front) {
 		}
 	}
 	if (changed) {
-		auto chunks_ = getChunks();
+		auto chunks_ = getSubChunks();
 		chunk->createMesh(chunks_);
 		worldMesh.clear();
 		genWorldMesh();
-		drawable.setUp(worldMesh);
+		auto setup = [](Drawable& drawable, Faces& worldMesh) {
+			drawable.setUp(worldMesh);
+		};
+		std::thread t(setup, std::ref(drawable), std::ref(worldMesh));
+		t.join();
+
 	}
+}
+std::vector<Chunk*> World::getSubChunks() {
+	auto chunks = getChunks();
+	std::vector<Chunk*> res;
+	for (auto& chunk : chunks) {
+		auto subs = chunk->getSubChunks();
+		res.insert(res.end(), subs.begin(), subs.end());
+	}
+	return res;
 }

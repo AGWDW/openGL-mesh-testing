@@ -40,5 +40,6 @@ private:
 	void renderChunksStatic(Camera& c, glm::mat4 projection);
 	void renderChunksDynamic(Camera& c, glm::mat4 projection);
 
-	Blocks& getBlock(glm::ivec3 blockPos, chunk_column*& chunk_); // uses absolute block position
+	Blocks& getBlock(glm::ivec3 blockPos, Chunk*& chunk_); // uses absolute block position
+	std::vector<Chunk*> getSubChunks();
 };

@@ -47,18 +47,16 @@ void Drawable::setUp(std::vector<Face*>& sortedMeshes) {
 	Texture* prevTex = std::get<1>(*sortedMeshes[0]);
 	GLuint counter = 0;
 	std::vector<glm::mat4> positions;
-
 	for (auto& mesh : sortedMeshes) {
 		if (std::get<0>(*mesh) != prevBuffer || std::get<1>(*mesh) != prevTex) {
-			prevBuffer->addPositions(positions);
-			buffers.push_back({ *prevBuffer, prevTex, counter });
-			prevBuffer->resetData();
-			// reset
+			Buffer buffer = *prevBuffer;
+			buffer.addPositions(positions);
+			buffers.push_back({ buffer, prevTex, counter });
+
 			counter = 0;
 			positions.clear();
 			prevBuffer = std::get<0>(*mesh);
 			prevTex = std::get<1>(*mesh);
-			prevBuffer->resetData();
 		}
 		glm::mat4 model(1);
 		model = glm::translate(model, std::get<2>(*mesh));

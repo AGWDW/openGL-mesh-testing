@@ -24,20 +24,16 @@ GLubyte world_generation::heightAtPositon(glm::vec2 pos) {
 	GLfloat sum = 0.0f;
 	for (GLubyte i = 0; i < octaves; i++) {
 		GLfloat raw = noise(inp * frequencies[i]);
-		// raw += 1.0f; // range 0 - 2
-		// raw /= 2.0f; // range 0 - 1
-		// raw *= CHUNK_SIZE; // range 0 - CHUNK_SIZE
-		sum += mult * raw;
+		raw *= mult;
+		raw += 1.0f; // range 0 - 2
+		raw /= 2.0f; // range 0 - 1
+		raw *= (CHUNK_SIZE / octaves); // range 0 - CHUNK_SIZE
 		mult /= 2.0f;
+		sum += raw;
 	}
 	sum = std::pow(sum, redistribution);
-	/*sum = std::lround(sum);
-	if (sum >= CHUNK_SIZE) sum = CHUNK_SIZE - 1;
-	if (sum < 0) sum++;*/
-	sum *= 10;
-	sum = std::abs(sum);
-	if (sum > CHUNK_SIZE) sum = CHUNK_SIZE - 1;
 	sum = std::lround(sum);
+	if (sum >= CHUNK_SIZE) sum = CHUNK_SIZE - 1;
 	return sum;
 }
 GLubyte world_generation::heightAtPositon(GLfloat x, GLfloat y) {

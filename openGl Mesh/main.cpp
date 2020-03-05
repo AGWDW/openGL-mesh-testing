@@ -18,13 +18,13 @@ int main() {
 		face->type = (FACES_NAMES)(FRONT + c++);
 	}
 	for (auto& tex : TEXTURES) {
-		tex->load3D(tex->getName());
+		tex->load3D();
 	}
 	for (auto& shader : SHADERS) {
 		shader->setUp();
 	}
 
-	Game game(1, 1);
+	Game game(0, 1);
 	// GameConfig::showFPS = true;
 	game.setWindow(window);
 	game.generateWorld();				 // angle, screen ratio,                    near, far

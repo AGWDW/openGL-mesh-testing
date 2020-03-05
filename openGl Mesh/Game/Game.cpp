@@ -137,11 +137,11 @@ void Game::mouseCallBack(GLFWwindow* window, double xPos, double yPos) {
 void Game::clickCallBack(GLFWwindow* window, int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		Camera& cam = hasPlayer ? player.getCamera() : *mainCamera;
-		Game::world.breakBlock(cam.GetPosition(), cam.GetFront());
+		// Game::world.breakBlock(cam.GetPosition(), cam.GetFront());
 	}
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
 		Camera& cam = hasPlayer ? player.getCamera() : *mainCamera;
-		Game::world.placeBlock(cam.GetPosition(), cam.GetFront());
+		// Game::world.placeBlock(cam.GetPosition(), cam.GetFront());
 	}
 }
 void Game::setupEventCB(GLFWwindow* window) {

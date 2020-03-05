@@ -1,5 +1,4 @@
 #pragma once
-#include "Game/World/constants.h"
 #include "Game/Player/Camera.h"
 using Face = std::tuple<Buffer*, Texture*, glm::vec3>;
 class Drawable

@@ -10,6 +10,8 @@
 #include <array>
 #include <chrono>
 #include <thread>
+#include <future>
+#include <functional>
 
 //#include "Player/Camera.h"
 #include "Player/Player.h"

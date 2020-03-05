@@ -20,7 +20,7 @@ Texture::Texture(GLboolean loadTex) {
 	created = false;
 	if (loadTex) {
 		std::string s = "grass";
-		created = load3D(s);
+		created = load3D();
 	}
 }
 GLboolean Texture::load2D(std::string& name) {
@@ -47,8 +47,8 @@ GLboolean Texture::load2D(std::string& name) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 	return GL_TRUE;
 }
-GLboolean Texture::load3D(std::string& name) {
-	this->name = name;
+GLboolean Texture::load3D() {
+	// this->name = name;
 	is2D = GL_FALSE;
 	std::vector<std::string> faces = {
 		"Textures/" + name + "/left.png",	// left
