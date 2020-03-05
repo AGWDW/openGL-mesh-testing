@@ -2,7 +2,7 @@
 
 #pragma region GameConfig
 GLboolean GameConfig::showFPS = false;
-glm::vec3 GameConfig::backgroundCol = { 0.5, 0.5, 0.5 };
+glm::vec3 GameConfig::backgroundCol = { 0.0f, 0.0f, 0.0f };
 GLuint GameConfig::FPSlock = 0;
 #pragma endregion
 
@@ -12,6 +12,7 @@ glm::vec3 Game::mouseData(0);
 std::array<GLboolean, 1024> Game::keys = std::array<GLboolean, 1024>();
 Player Game::player = Player();
 GLboolean Game::hasPlayer = GL_FALSE;
+World Game::world = World(0);
 #pragma endregion
 Game::Game() {
 	hasPlayer = false;
@@ -20,7 +21,7 @@ Game::Game() {
 	lastFrameTime = -1.0f;
 	Game::mainCamera = new Camera({ 0, 2, 0 });
 	Game::mouseData = { 0, 0, -90 };
-	GameConfig::setup();
+	GameConfig::setup(0, { 1, 1, 1 });
 }
 Game::Game(GLboolean hasPlayer, GLboolean hasSkybox) {
 	this->hasPlayer = hasPlayer;
@@ -29,23 +30,21 @@ Game::Game(GLboolean hasPlayer, GLboolean hasSkybox) {
 	gameRunning = false;
 	Game::mouseData = { 0, 0, -90 };
 	lastFrameTime = -1.0f;
-	GameConfig::setup();
+	GameConfig::setup(0, { 0.5, 0.5, 0.5 });
 	if (hasSkybox) {
 		makeSkybox("skybox");
 	}
+	createCrossHair();
 }
 
 void Game::generateWorld() {
-	world = World(1, 0);
-}
-void Game::update() {
-
+	world = World(1, 1, 0);
 }
 void Game::doLoop(glm::mat4 projection) {
 	gameRunning = true;
 	setupEventCB(window);
 	this->projection = projection;
-	mainCamera->setPosition({ -0.0f, -11.0f, 0.0f });
+	mainCamera->setPosition({ 0.0f, -0.0f, 0.0f });
 	while (gameRunning) {
 		calcTimes();
 		lockFPS();
@@ -62,6 +61,7 @@ void Game::doLoop(glm::mat4 projection) {
 
 		glfwSwapBuffers(window);
 	}
+	cleanUp();
 }
 void Game::calcTimes() {
 	GLfloat frame = glfwGetTime();
@@ -87,17 +87,12 @@ void Game::lockFPS() {
 		}
 	}
 }
-void Game::showStuff(GLboolean showStatic) {
+void Game::showStuff() {
 	Camera& cam = hasPlayer ? player.getCamera() : *mainCamera;
 	if (hasPlayer) {
 		player.render(projection);
 	}
-	if (showStatic) {
-		world.renderChunksStatic(cam, projection);
-	}
-	else {
-		// world.renderChunksDynamic();
-	}
+	world.render(cam, projection);
 	if (hasSkybox) {
 		showSkybox();
 	}
@@ -107,7 +102,7 @@ void Game::setWindow(GLFWwindow* window) {
 	this->window = window;
 }
 void Game::setupPlayer() {
-	player = Player({ -2.0f, 5.0f, -0.0f }, { -0.5f, 1.5f, 4.0f });
+	player = Player({ -2.0f, 5.0f, -0.0f }, { 0.0f, 1.25f, 0.0f } /*{ -0.5f, 0.25f, 3.0f }*/);
 	player.create();
 }
 void Game::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mode) {
@@ -133,7 +128,8 @@ void Game::mouseCallBack(GLFWwindow* window, double xPos, double yPos) {
 	Game::mouseData.x = xPos;
 	Game::mouseData.y = yPos;
 	if (Game::hasPlayer) {
-		Game::player.processMouse(xOffset, yOffset, mouseData.x);
+		Game::player.updateCamera(xOffset, yOffset);
+		// Game::player.processMouse(xOffset, yOffset, mouseData.x);
 		return;
 	}
 	Game::mainCamera->ProcessMouseMovement(xOffset, yOffset);
@@ -170,7 +166,7 @@ void Game::doMovement() {
 		if (k[GLFW_KEY_LEFT_ALT]) {
 			alt = !alt;
 		}
-		if (alt) {
+		if (alt || 0) {
 			if (k[GLFW_KEY_W]) {
 				player.move(Move_Dir::FORWARD);
 			}
@@ -232,6 +228,15 @@ void Game::doMovement() {
 			Game::mainCamera->GetPosition() += glm::vec3(0, -1, 0) * speed * deltaTime;
 		}
 	}
+	/*if (k[GLFW_KEY_F1]) {
+		auto start = std::chrono::high_resolution_clock::now();
+		world.createChunk({ 32, 16 });
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		std::cout << "made in: " << duration.count() << " microsecconds\n";
+	}*/
+	Camera& cam = hasPlayer ? player.getCamera() : *mainCamera;
+	world.updatePlayerPos(&cam.GetPosition());
 }
 void Game::cleanUp() {
 	for (auto& mesh : FACES) {
@@ -313,7 +318,7 @@ void Game::showSkybox() {
 	SHADERS[SKYBOX]->setValue("projection", projection);
 
 	glBindVertexArray(SBVAO);
-	TEXTURES[SKYBOX_T]->bind();
+	TEXTURES[(int)Texture_Names::SKYBOX]->bind();
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
