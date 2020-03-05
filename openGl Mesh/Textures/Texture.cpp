@@ -19,12 +19,16 @@ Texture::Texture(GLboolean loadTex) {
 	is2D = false;
 	created = false;
 	if (loadTex) {
+<<<<<<< HEAD
 		std::string s = "grass";
 		created = load3D();
+=======
+		created = load3D("grass");
+>>>>>>> parent of 7c59fdd... crosshair
 	}
 }
 GLboolean Texture::load2D(std::string& name) {
-	name = "Textures/" + name + ".png";
+	name = name + ".png";
 
 	glGenTextures(1, &texMap);
 	// diffuse
@@ -40,8 +44,13 @@ GLboolean Texture::load2D(std::string& name) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	return GL_TRUE;
 }
+<<<<<<< HEAD
 GLboolean Texture::load3D() {
 	// this->name = name;
+=======
+GLboolean Texture::load3D(const std::string& name) {
+	this->name = name;
+>>>>>>> parent of 7c59fdd... crosshair
 	is2D = GL_FALSE;
 	std::vector<std::string> faces = {
 		"Textures/" + name + "/left.png",	// left
@@ -108,11 +117,4 @@ GLboolean& Texture::get2D() {
 }
 glm::ivec2& Texture::getDimentions() {
 	return dimentions;
-}
-void Texture::destroy() {
-	created = 0;
-	dimentions = glm::ivec2(0);
-	is2D = 0;
-	name = "";
-	glDeleteTextures(1, &texMap);
 }
