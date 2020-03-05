@@ -21,13 +21,7 @@ public:
 	GLboolean& get2D();
 	glm::ivec2& getDimentions();
 	void unBind();
-<<<<<<< HEAD
-	GLboolean load3D();
-	GLboolean load3D(const std::string& name);
-	GLboolean load3D(const std::string& name);
-=======
->>>>>>> parent of 7c59fdd... crosshair
-	GLboolean load3D(const std::string& name);
+	GLboolean load3D(std::string& name);
 	GLboolean load2D(std::string& name);
 private:
 	GLboolean created;
