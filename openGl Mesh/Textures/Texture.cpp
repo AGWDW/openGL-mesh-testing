@@ -20,8 +20,12 @@ Texture::Texture(GLboolean loadTex) {
 	created = false;
 	if (loadTex) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		std::string s = "grass";
 		created = load3D();
+=======
+		created = load3D("grass");
+>>>>>>> parent of 7c59fdd... crosshair
 =======
 		created = load3D("grass");
 >>>>>>> parent of 7c59fdd... crosshair
@@ -45,9 +49,12 @@ GLboolean Texture::load2D(std::string& name) {
 	return GL_TRUE;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 GLboolean Texture::load3D() {
 	// this->name = name;
 =======
+=======
+>>>>>>> parent of 7c59fdd... crosshair
 GLboolean Texture::load3D(const std::string& name) {
 	this->name = name;
 >>>>>>> parent of 7c59fdd... crosshair
