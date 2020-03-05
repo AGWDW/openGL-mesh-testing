@@ -18,7 +18,7 @@ public:
 	Shader() {
 
 	}
-	Shader(std::string shaderName, GLboolean hasGeometry = 0);
+	Shader(std::string shaderName);
 	void setUp();
 	void setName(std::string name);
 	void bind();
@@ -32,9 +32,7 @@ public:
 	GLboolean setValue(std::string name, glm::mat4& value);
 	GLboolean setValue(std::string name, GLfloat& value);
 	GLboolean setValue(std::string name, const GLint& value);
-	void destroy();
 private:
 	GLuint program;
-	GLboolean hasGeom;
 	std::string name;
 };

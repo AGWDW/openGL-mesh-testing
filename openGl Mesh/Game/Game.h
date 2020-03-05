@@ -53,9 +53,7 @@ private:
 	GLboolean hasSkybox;
 	GLfloat lastFrameTime;
 	glm::mat4 projection;
-	GLuint SBVAO, CHVAO;
-	Texture crossHair;
-
+	GLuint SBVAO;
 	// blockupdates
 	void showFPS();
 	void calcTimes();
@@ -69,6 +67,4 @@ private:
 	void doMovement();
 	void makeSkybox(std::string skybox);
 	void showSkybox();
-	void createCrossHair();
-	void showCrossHair();
 };

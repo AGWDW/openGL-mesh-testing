@@ -31,8 +31,7 @@ enum class Texture_Names {
 enum SHADER_NAMES {
 	BLOCK2,
 	BLOCK3,
-	SKYBOX,
-	CROSSHAIR
+	SKYBOX
 };
 enum class Move_Dir {
 	FORWARD,

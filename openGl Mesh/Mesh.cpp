@@ -16,7 +16,7 @@ namespace Mesh {
 		buffer = new Buffer();
 		rotation = { 0, 0, 0 };
 		if (loadTex) {
-			texture = new Texture();
+			texture = new Texture(false);
 		}
 		else {
 			texture = new Texture("grass", false);

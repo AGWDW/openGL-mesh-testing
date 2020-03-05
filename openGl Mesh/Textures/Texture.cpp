@@ -7,12 +7,12 @@ Texture::Texture(std::string name, std::string overload) {
 Texture::Texture(std::string name, GLboolean is2D) {
 	this->name = name;
 	this->is2D = is2D;
-	/*if (is2D) {
+	if (is2D) {
 		created = load2D(name);
 	}
 	else {
 		created = load3D(name);
-	}*/
+	}
 }
 Texture::Texture(GLboolean loadTex) {
 	name = "";
@@ -29,22 +29,15 @@ GLboolean Texture::load2D(std::string& name) {
 	glGenTextures(1, &texMap);
 	// diffuse
 	unsigned char* image = SOIL_load_image(name.c_str(), &dimentions.x, &dimentions.y, 0, SOIL_LOAD_RGBA);
-	if (!image) { 
-		std::cout << "texture error" << std::endl; 
-		return 0;
-	}
+	if (!image) std::cout << "texture error" << std::endl;
 	glBindTexture(GL_TEXTURE_2D, texMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dimentions.x, dimentions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
-	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// SOIL_free_image_data(image);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
+	SOIL_free_image_data(image);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	return GL_TRUE;
 }
 GLboolean Texture::load3D() {
