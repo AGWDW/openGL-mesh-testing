@@ -45,6 +45,7 @@ void Game::doLoop(glm::mat4 projection) {
 	gameRunning = true;
 	setupEventCB(window);
 	this->projection = projection;
+	mainCamera->setPosition({ -0.0f, -11.0f, 0.0f });
 	while (gameRunning) {
 		calcTimes();
 		lockFPS();
@@ -65,7 +66,7 @@ void Game::doLoop(glm::mat4 projection) {
 void Game::calcTimes() {
 	GLfloat frame = glfwGetTime();
 	deltaTime = frame - lastFrameTime;
-	if (lastFrameTime == -1) deltaTime = 1.0f / 60.0f;
+	/*if (lastFrameTime == -1)*/ deltaTime = 1.0f / 60.0f;
 	lastFrameTime = frame;
 	frameRate = 1 / deltaTime;
 }
@@ -100,6 +101,7 @@ void Game::showStuff(GLboolean showStatic) {
 	if (hasSkybox) {
 		showSkybox();
 	}
+	showCrossHair();
 }
 void Game::setWindow(GLFWwindow* window) {
 	this->window = window;
@@ -136,8 +138,19 @@ void Game::mouseCallBack(GLFWwindow* window, double xPos, double yPos) {
 	}
 	Game::mainCamera->ProcessMouseMovement(xOffset, yOffset);
 }
+void Game::clickCallBack(GLFWwindow* window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		Camera& cam = hasPlayer ? player.getCamera() : *mainCamera;
+		Game::world.breakBlock(cam.GetPosition(), cam.GetFront());
+	}
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+		Camera& cam = hasPlayer ? player.getCamera() : *mainCamera;
+		Game::world.placeBlock(cam.GetPosition(), cam.GetFront());
+	}
+}
 void Game::setupEventCB(GLFWwindow* window) {
 	glfwSetKeyCallback(window, Game::keyCallBack);
+	glfwSetMouseButtonCallback(window, Game::clickCallBack);
 	glfwSetCursorPosCallback(window, Game::mouseCallBack);
 }
 GLboolean alt = 0;
@@ -221,7 +234,15 @@ void Game::doMovement() {
 	}
 }
 void Game::cleanUp() {
-	world.cleanUp();
+	for (auto& mesh : FACES) {
+		mesh->destroy();
+	}
+	for (auto& tex : TEXTURES) {
+		tex->destroy();
+	}
+	for (auto& shader : SHADERS) {
+		shader->destroy();
+	}
 }
 
 void Game::makeSkybox(std::string skybox) {
@@ -282,7 +303,6 @@ void Game::makeSkybox(std::string skybox) {
 	auto& shader = SHADERS[SKYBOX];
 	shader->bind();
 	shader->setValue("skybox", 0);
-
 }
 void Game::showSkybox() {
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
@@ -299,4 +319,54 @@ void Game::showSkybox() {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	glDepthFunc(GL_LESS); // set depth function back to default
+}
+void Game::createCrossHair() {
+	// texture 
+	crossHair = Texture("crosshair", 1);
+	crossHair.load2D(crossHair.getName());
+	// 
+	// vao/vbo
+	GLfloat positions[] = {
+		0.25f,  0.45f, 0.0f,  1, 1,
+		0.25f, -0.45f, 0.0f,  1, 0,
+		-0.25f,  0.45f, 0.0f, 0, 1,
+
+		0.25f, -0.45f, 0.0f,  1, 0,
+		-0.25f, -0.45f, 0.0f, 0, 0,
+		-0.25f,  0.45f, 0.0f, 0, 1
+	};
+	GLuint vbo;
+	glGenVertexArrays(1, &CHVAO);
+	glGenBuffers(1, &vbo);
+
+	glBindVertexArray(CHVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(positions), &positions, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+	glBindVertexArray(0);
+
+
+	auto& shader = SHADERS[CROSSHAIR];
+	shader->bind();
+	crossHair.bind();
+	auto scale = glm::vec3(0.1f);
+	shader->setValue("scale", scale);
+	shader->setValue("alpha", 1);
+	shader->setValue("texture1", 0);
+	shader->unBind();
+}
+void Game::showCrossHair() {
+	auto& shader = SHADERS[CROSSHAIR];
+	shader->bind();
+	crossHair.bind();
+
+	glBindVertexArray(CHVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+	shader->unBind();
+	crossHair.unBind();
 }

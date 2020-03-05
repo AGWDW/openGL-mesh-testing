@@ -178,12 +178,8 @@
     <None Include="Shaders\block2_v.gls" />
     <None Include="Shaders\block3_f.gls" />
     <None Include="Shaders\block3_v.gls" />
-    <None Include="Shaders\block_f.gls" />
-    <None Include="Shaders\block_v.gls" />
     <None Include="Shaders\skybox_f.gls" />
     <None Include="Shaders\skybox_v.gls" />
-    <None Include="txt_f.gls" />
-    <None Include="txt_v.gls" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h" />
@@ -191,7 +187,7 @@
     <ClInclude Include="Game\Player\Entity.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\Player\Camera.h" />
-    <ClInclude Include="Game\World\Chunk.h" />
+    <ClInclude Include="Game\World\Chunks\Chunk.h" />
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Renders\chunkRender.h" />
@@ -216,10 +212,12 @@
     <ClInclude Include="SOIL2\stb_image_write.h" />
     <ClInclude Include="Textures\Texture.h" />
     <ClInclude Include="Game\World\World.h" />
+    <ClInclude Include="Game\World\world_generation.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\cobblestone_diff.png" />
     <Image Include="Textures\cobblestone_spec.png" />
+    <Image Include="Textures\crosshair.png" />
     <Image Include="Textures\grass\back.png" />
     <Image Include="Textures\grass\bottom.png" />
     <Image Include="Textures\grass\front.png" />
