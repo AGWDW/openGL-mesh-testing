@@ -19,13 +19,10 @@ Texture::Texture(GLboolean loadTex) {
 	is2D = false;
 	created = false;
 	if (loadTex) {
-<<<<<<< HEAD
 		std::string s = "grass";
 		created = load3D();
 		created = load3D("grass");
 		created = load3D("grass");
-=======
->>>>>>> parent of 7c59fdd... crosshair
 		created = load3D("grass");
 	}
 }
@@ -46,11 +43,8 @@ GLboolean Texture::load2D(std::string& name) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	return GL_TRUE;
 }
-<<<<<<< HEAD
 GLboolean Texture::load3D() {
 	// this->name = name;
-=======
->>>>>>> parent of 7c59fdd... crosshair
 GLboolean Texture::load3D(const std::string& name) {
 	this->name = name;
 	is2D = GL_FALSE;
