@@ -10,6 +10,8 @@
 #include <array>
 #include <chrono>
 #include <thread>
+#include <future>
+#include <functional>
 
 //#include "Player/Camera.h"
 #include "Player/Player.h"
@@ -45,7 +47,7 @@ private:
 	GLfloat deltaTime;
 	GLuint frameRate;
 	GLboolean gameRunning;
-	World world;
+	static World world;
 	static GLboolean hasPlayer;
 	static Player player;
 	GLboolean hasSkybox;
@@ -58,9 +60,10 @@ private:
 	void proccesEvents();
 	void setupEventCB(GLFWwindow* window);
 	void lockFPS();
-	void showStuff(GLboolean showStatic = true);
+	void showStuff();
 	static void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mode);
 	static void mouseCallBack(GLFWwindow* window, double xPos, double yPos);
+	static void clickCallBack(GLFWwindow* window, int button, int action, int mods);
 	void doMovement();
 	void makeSkybox(std::string skybox);
 	void showSkybox();
