@@ -2,17 +2,17 @@
 
 #pragma region Public
 #pragma region Constructors
-ChunkColumn::ChunkColumn() : position(0), highest_natural_point(-1), mesh(), heightMap(), isFlat(1)
+ChunkColumn::ChunkColumn() : position(0), highest_natural_point(-1), mesh(), heightMap(), isFlat(1), generationStage(0)
 {
 	// blocks.fill(Blocks::AIR);
 }
 
-ChunkColumn::ChunkColumn(glm::vec2 pos) : position(pos), highest_natural_point(-1), mesh(), heightMap(), isFlat(0)
+ChunkColumn::ChunkColumn(glm::vec2 pos) : position(pos), highest_natural_point(-1), mesh(), heightMap(), isFlat(0), generationStage(0)
 {
 	// blocks.fill(Blocks::GRASS);
 }
 
-ChunkColumn::ChunkColumn(std::string fileName) 
+ChunkColumn::ChunkColumn(std::string fileName) : generationStage(0)
 {
 	fileName = "Chunks/" + fileName + ".dat";
 	Savable_ s;
@@ -70,7 +70,7 @@ ChunkColumn::ChunkColumn(std::string fileName)
 	isFlat = 0;
 }
 
-ChunkColumn::ChunkColumn(glm::vec2 pos, HeightMap heightMap) : position(pos), highest_natural_point(-1), mesh(), heightMap(heightMap), isFlat(0)
+ChunkColumn::ChunkColumn(glm::vec2 pos, HeightMap heightMap) : position(pos), highest_natural_point(-1), mesh(), heightMap(heightMap), isFlat(0), generationStage(0)
 {
 	// blocks.fill(Blocks::AIR);
 }
@@ -92,7 +92,7 @@ void ChunkColumn::createMesh(AdjacentMap& adjacentCunks)
 			for (Block_Count& encoded : encodes) {
 				height += encoded.second;
 			}
-			GLuint maxHeigh = height-1;
+			GLuint maxHeigh = height - 1;
 			height = 0;
 			for (Block_Count& encoded : encodes) {
 				for (GLuint i = 0; i < encoded.second; i++) {
@@ -191,6 +191,10 @@ glm::vec3 ChunkColumn::getRelativePosition(glm::vec3 worldPos)
 glm::vec3 ChunkColumn::getWorldPosition(glm::vec3 relativePos)
 {
 	return relativePos + position;
+}
+GLubyte ChunkColumn::getStage()
+{
+	return generationStage;
 }
 #pragma endregion
 

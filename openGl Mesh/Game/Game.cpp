@@ -13,7 +13,7 @@ glm::vec3 Game::mouseData(0);
 std::array<GLboolean, 1024> Game::keys = std::array<GLboolean, 1024>();
 Player Game::player = Player();
 GLboolean Game::hasPlayer = GL_FALSE;
-World Game::world = World(0);
+World Game::world = World("");
 #pragma endregion
 
 
@@ -42,7 +42,7 @@ Game::Game(GLboolean hasPlayer, GLboolean hasSkybox) {
 }
 
 void Game::generateWorld() {
-	world = World(1, 1, 0);
+	world = World(1, 1);
 }
 void Game::doLoop(glm::mat4 projection) {
 	gameRunning = true;
@@ -58,9 +58,7 @@ void Game::doLoop(glm::mat4 projection) {
 		glClearColor(GameConfig::backgroundCol.r, GameConfig::backgroundCol.g, GameConfig::backgroundCol.b, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (world.activeBuffer.size() == 16) {
-			int t = 0;
-		}
+		// world.advanceGeneration();
 
 		showStuff();
 		showFPS();

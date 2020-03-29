@@ -13,6 +13,7 @@ private: // properties
 	HeightMap heightMap;
 	GLubyte highest_natural_point;
 	GLboolean isFlat;
+	GLubyte generationStage;
 
 public: // functions
    // constructors
@@ -33,6 +34,7 @@ public: // functions
 	Blocks getBlock(glm::vec3 pos, GLboolean worldPos = 1);
 	glm::vec3 getRelativePosition(glm::vec3 worldPos);
 	glm::vec3 getWorldPosition(glm::vec3 relativePos);
+	GLubyte getStage();
 
 	// opertations
 	void editBlock(glm::vec3 pos, GLboolean worldPos, Blocks block, AdjacentMap_p& adjacentCunks);
