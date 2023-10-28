@@ -179,7 +179,7 @@ void Entity::updatePosition(GLfloat deltaTime, std::vector<ChunkColumn*>& adjace
 		grounded = 0;
 		submerged = 0;
 		vel += acc * deltaTime;
-		vel.y -= GRAVITY * deltaTime * resToGravity;
+		// vel.y -= GRAVITY * deltaTime * resToGravity;
 		resToGravity = 1;
 	}
 	if (isClipping) {

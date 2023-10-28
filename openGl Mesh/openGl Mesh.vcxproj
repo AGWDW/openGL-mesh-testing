@@ -209,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockStore.h" />
+    <ClInclude Include="Game\World\HelperClasses\BlockColumnEncoded.h" />
     <ClInclude Include="GeomRendering\DrawableGeom.h" />
     <ClInclude Include="GeomRendering\BufferGeom.h" />
     <ClInclude Include="EntityHander.h" />

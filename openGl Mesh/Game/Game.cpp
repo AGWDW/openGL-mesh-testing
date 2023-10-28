@@ -59,6 +59,8 @@ Game::Game(GLboolean hasPlayer, GLboolean hasSkybox, glm::ivec2 windowDim) : Gam
 void Game::generateWorld() {
 	world = World(true, true, false, 0);
 }
+unsigned long totalTime = 0;
+int renderedCount = 0;
 void Game::doLoop(glm::mat4 projection) {
 	gameRunning = true;
 	setupEventCB(window);
@@ -83,7 +85,7 @@ void Game::doLoop(glm::mat4 projection) {
 		glClearColor(GameConfig::backgroundCol.r, GameConfig::backgroundCol.g, GameConfig::backgroundCol.b, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		world.advanceGeneration();
+		//world.advanceGeneration();
 
 
 		std::vector<std::vector<ChunkColumn*>> adjacentChunkss;
@@ -107,6 +109,8 @@ void Game::doLoop(glm::mat4 projection) {
 
 		glfwSwapBuffers(window);
 	}
+
+	std::cout << "Avg Render Time: " << totalTime / renderedCount << std::endl;
 }
 void Game::calcTimes() {
 	GLfloat frame = glfwGetTime();
@@ -154,7 +158,12 @@ void Game::showStuff() {
 		showSkybox();
 	}
 
+	Timer t;
+	t.start();
 	world.render(cam, projection, LSM, depthMap);
+	t.stop();
+	totalTime += t.getTime();
+	renderedCount++;
 	
 	showGUI();
 

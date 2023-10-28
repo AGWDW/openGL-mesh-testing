@@ -4,6 +4,7 @@
 #include <chrono>
 #include "../constants.h"
 #include "../../../BlockStore.h"
+#include "../../../GeomRendering/BufferGeom.h"
 class ChunkColumn
 {
 private: // properties
@@ -19,6 +20,8 @@ public: // functions
 
 	GLubyte stage;
 	GLboolean fromFile;
+
+	BufferGeom buffer;
 
    // constructors
 	ChunkColumn();

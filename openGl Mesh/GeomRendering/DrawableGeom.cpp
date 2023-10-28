@@ -5,6 +5,7 @@
 #include "BufferGeom.h"
 #include "GeomData.h"
 #include "../Buffer.h"
+#include "../Game/World/Chunks/ChunkColumn.h"
 
 DrawableGeom::DrawableGeom() : data()
 {
@@ -69,6 +70,15 @@ void DrawableGeom::setUp(const std::unordered_map<GLuint, FaceB_p>& mesh)
 		buffer.setUp(raw.data(), raw.size());
 
 		data.emplace_back(buffer, std::get<1>(d));
+	}
+}
+
+void DrawableGeom::setUp(const Chunks& chunks)
+{
+	data.clear();
+
+	for (const ChunkColumn& chunk : chunks) {
+		data.emplace_back(chunk.buffer, nullptr);
 	}
 }
 

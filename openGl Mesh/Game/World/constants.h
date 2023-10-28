@@ -6,6 +6,7 @@
 #include <chrono>
 #include "../../Shaders/Shader.h"
 #include "../../Textures/Texture.h"
+#include "HelperClasses/BlockColumnEncoded.h"
 
 class ChunkColumn;
 class BlockStore;
@@ -39,6 +40,10 @@ using WorldMap = std::unordered_map<glm::vec2, BlockStore>;
 using Item = GLuint;
 
 using AdjacentMap_p = std::unordered_map<glm::vec2, ChunkColumn*>;
+
+// new stuff
+using NewHeightMap = std::list<BlockColumn>;
+
 
 struct BlockDet {
 	std::string Name;

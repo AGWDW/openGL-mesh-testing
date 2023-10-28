@@ -30,7 +30,7 @@ void World::generateFlatChunks(std::vector<glm::vec2> chunkPositions) {
 	std::cout << "Started\n";
 	auto start = std::chrono::high_resolution_clock::now();
 	for (glm::vec2& pos : chunkPositions) {
-		chunks2.push_back({ pos });
+		chunks2.emplace_back(pos);
 	}
 	auto t = getAdjacentMap({ 0, 0, 0 }, RENDER_DISTANCE + 2);
 	for (auto& chunk : chunks2) {
@@ -52,12 +52,12 @@ void World::generateTerrain(std::vector<glm::vec2>& chunkPositions) {
 		std::string name = "chunk" + std::to_string((int)pos.x) + "," + std::to_string((int)pos.y);
 		if (FILE* file = fopen(("Chunks/" + name + ".dat").c_str(), "r")) {
 			fclose(file);
-			chunks2.push_back({ name });
+			chunks2.emplace_back(name);
 			if (chunks2.back().getMesh().size() > 0) victims.push_back(pos);
 			else chunks2.back().stage = 0;
 		}
 		else {
-			chunks2.push_back({ pos });
+			chunks2.push_back(ChunkColumn(pos));
 			chunks2.back().addTrees();
 
 			generationStack.push_back(chunks2.size() - 1);
@@ -71,10 +71,15 @@ void World::generateTerrain(std::vector<glm::vec2>& chunkPositions) {
 	for (auto& pos : ring) {
 		worldMap[pos] = BlockStore(pos);
 	}
+	for (auto& chunk : chunks2) {
+		chunk.createMesh(&worldMap);
+	}
+	created = true;
 	
 	genWorldMesh();
 	drawable.setUp(worldMesh);
 	geomDrawable.setUp(worldMesh);
+	// geomDrawable.setUp(chunks2);
 }
 
 void World::render(Camera& c, glm::mat4 projection, glm::mat4 lightMatrix, GLuint depthMap) {
@@ -90,6 +95,7 @@ void World::genWorldMesh() {
 	worldMesh.clear();
 	for(auto & chunk : chunks2) {
 		std::unordered_map<GLuint, FaceB_p>& mesh = chunk.getMesh();
+
 		for (auto& m : mesh) {
 			const GLuint key = m.first;
 			FaceB_p& chunkFaces = m.second;
@@ -531,9 +537,10 @@ void World::advanceGeneration()
 	
 	if (chunk->stage >= PARTS_PER_CHUNK) {
 		generationStack.pop_back();
-		genWorldMesh();
-		drawable.setUp(worldMesh);
-		geomDrawable.setUp(worldMesh);
+		// genWorldMesh();
+		// drawable.setUp(worldMesh);
+		// geomDrawable.setUp(worldMesh);
+		geomDrawable.setUp(chunks2);
 		return;
 	}
 
